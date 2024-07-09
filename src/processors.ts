@@ -79,12 +79,19 @@ export class Processors {
       console.debug('Call image processor');
       //make sure url is defined. once the setting gets reset to default, an empty string will be returned by settings
       const imageData = await this.convertToImage(source);
-      const blob = new Blob([imageData], { 'type': this.imageMimeType.get(this.plugin.settings.imageFormat) });
+      const imageMimeType = this.imageMimeType.get(this.plugin.settings.imageFormat);
+      const blob = new Blob([imageData], { 'type': imageMimeType });
       const url = window.URL || window.webkitURL;
       const blobUrl = url.createObjectURL(blob);
       const img = document.createElement('img');
+      const obj = document.createElement('object');
+
       img.src = blobUrl;
-      el.appendChild(img);
+      obj.appendChild(img);
+      obj.type = imageMimeType;
+      obj.data = blobUrl;
+      obj.addClass('graphviz-image');
+      el.appendChild(obj);
     } catch (errMessage) {
       console.error('convert to image error', errMessage);
       const pre = document.createElement('pre');
