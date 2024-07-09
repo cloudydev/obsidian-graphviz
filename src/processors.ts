@@ -12,17 +12,17 @@ export class Processors {
   constructor(plugin: GraphvizPlugin) {
     this.plugin = plugin;
   }
-  
+
   imageMimeType = new Map<string, string>([
-        ['png', 'image/png'],
-        ['svg', 'image/svg+xml']
-    ]);
+    ['png', 'image/png'],
+    ['svg', 'image/svg+xml']
+  ]);
 
   private async writeDotFile(sourceFile: string): Promise<Uint8Array> {
     return new Promise<Uint8Array>((resolve, reject) => {
       const cmdPath = this.plugin.settings.dotPath;
       const imageFormat = this.plugin.settings.imageFormat;
-      const parameters = [ `-T${imageFormat}`, sourceFile ];
+      const parameters = [`-T${imageFormat}`, sourceFile];
 
       console.debug(`Starting dot process ${cmdPath}, ${parameters}`);
       const dotProcess = spawn(cmdPath, parameters);
@@ -79,7 +79,7 @@ export class Processors {
       console.debug('Call image processor');
       //make sure url is defined. once the setting gets reset to default, an empty string will be returned by settings
       const imageData = await this.convertToImage(source);
-      const blob = new Blob([ imageData ], {'type': this.imageMimeType.get(this.plugin.settings.imageFormat)});
+      const blob = new Blob([imageData], { 'type': this.imageMimeType.get(this.plugin.settings.imageFormat) });
       const url = window.URL || window.webkitURL;
       const blobUrl = url.createObjectURL(blob);
       const img = document.createElement('img');
@@ -94,7 +94,7 @@ export class Processors {
       el.appendChild(pre);
     }
   }
-  
+
   public async d3graphvizProcessor(source: string, el: HTMLElement, _: MarkdownPostProcessorContext): Promise<void> {
     console.debug('Call d3graphvizProcessor');
     const div = document.createElement('div');
@@ -105,7 +105,7 @@ export class Processors {
     const script = document.createElement('script');
     // graphviz(graphId).renderDot(source); => does not work, ideas how to use it?
     // Besides, sometimes d3 is undefined, so there must be a proper way to integrate d3.
-    const escapedSource = source.replaceAll('\\', '\\\\').replaceAll('`','\\`');
+    const escapedSource = source.replaceAll('\\', '\\\\').replaceAll('`', '\\`');
     script.text =
       `if( typeof d3 != 'undefined') { 
         d3.select("#${graphId}").graphviz()
