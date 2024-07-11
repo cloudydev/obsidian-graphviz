@@ -25,7 +25,8 @@ export class Processors {
       const cmdPath = this.plugin.settings.dotPath.trim();
       const imageFormat = this.plugin.settings.imageFormat;
       const alreadyQualified = (cmdPath.contains('/') || cmdPath.contains('\\'));
-      const execPrefix = alreadyQualified ? [] : ['/usr/bin/env', '-P', LIKELY_LOCATIONS];
+      const isWin = process.platform === 'win32';
+      const execPrefix = (alreadyQualified || isWin) ? [] : ['/usr/bin/env', '-P', LIKELY_LOCATIONS];
       const execFull = execPrefix.concat([cmdPath, `-T${imageFormat}`, sourceFile]);
 
       console.debug(`Starting dot process [${execFull}]`);
